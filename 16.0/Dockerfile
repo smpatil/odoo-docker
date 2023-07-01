@@ -1,4 +1,4 @@
-FROM debian:buster-slim
+FROM debian:bullseye-slim
 MAINTAINER Odoo S.A. <info@odoo.com>
 
 SHELL ["/bin/bash", "-xo", "pipefail", "-c"]
@@ -17,7 +17,9 @@ RUN apt-get update && \
         libssl-dev \
         node-less \
         npm \
+        python3-magic \
         python3-num2words \
+        python3-odf \
         python3-pdfminer \
         python3-pip \
         python3-phonenumbers \
@@ -37,7 +39,7 @@ RUN apt-get update && \
     && rm -rf /var/lib/apt/lists/* wkhtmltox.deb
 
 # install latest postgresql-client
-RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
+RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ bullseye-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
     && GNUPGHOME="$(mktemp -d)" \
     && export GNUPGHOME \
     && repokey='B97B0AFCAA1A47F044F244A07FCC7D46ACCC4CF8' \
@@ -54,9 +56,9 @@ RUN echo 'deb http://apt.postgresql.org/pub/repos/apt/ buster-pgdg main' > /etc/
 RUN npm install -g rtlcss
 
 # Install Odoo
-ENV ODOO_VERSION 14.0
+ENV ODOO_VERSION 16.0
 ARG ODOO_RELEASE=20230629
-ARG ODOO_SHA=621799a3ab09aacdf4139b3dbea6af48a2fb0df0
+ARG ODOO_SHA=ef1a7436be87a897efa0d0b4a50a159d2ee3e1e3
 RUN curl -o odoo.deb -sSL http://nightly.odoo.com/${ODOO_VERSION}/nightly/deb/odoo_${ODOO_VERSION}.${ODOO_RELEASE}_all.deb \
     && echo "${ODOO_SHA} odoo.deb" | sha1sum -c - \
     && apt-get update \
